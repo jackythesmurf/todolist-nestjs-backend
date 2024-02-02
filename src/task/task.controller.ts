@@ -17,12 +17,12 @@ export class TaskController {
   @Post()
   async create(@Body() createTaskDto: CreateTaskDto) {
     try {
-      // Attempt to create a task using the provided DTO
+      // create a task using the provided DTO
       const task = await this.taskService.create(createTaskDto);
       this.logger.log(`Task created successfully with ID: ${task.id}`);
       return task;
     } catch (error) {
-      // Log the error and throw an HTTP exception
+      // HTTP exception if there is error
       this.logger.error(`Failed to create task: ${error.message}`, error.stack);
       throw new HttpException('Failed to create task', HttpStatus.BAD_REQUEST);
     }
