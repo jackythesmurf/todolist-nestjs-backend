@@ -7,7 +7,8 @@ import {
   HttpStatus,
   Logger,
   Param,
-  Delete
+  Delete,
+  Patch,
 } from '@nestjs/common';
 import { TaskService } from './task.service';
 import { CreateTaskDto } from './dto/create-task.dto';
@@ -77,13 +78,28 @@ export class TaskController {
     try {
       await this.taskService.deleteTask(id);
       this.logger.log(`Task with ID: ${id} deleted successfully`);
-      return true
+      return true;
     } catch (error) {
       this.logger.error(`Failed to delete task: ${error.message}`, error.stack);
       throw new HttpException(
         'Failed to delete task',
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
+    }
+  }
+
+  @Patch(':id')
+  async updateTask(
+    @Param('id') id: string,
+    @Body() updateTaskDto: Partial<CreateTaskDto>, // Assuming the CreateTaskDto can be reused for updates
+  ): Promise<Task> {
+    try {
+      const updatedTask = await this.taskService.update(id, updateTaskDto);
+      this.logger.log(`Task with ID: ${id} updated successfully`);
+      return updatedTask;
+    } catch (error) {
+      this.logger.error(`Failed to update task: ${error.message}`, error.stack);
+      throw new HttpException('Failed to update task', HttpStatus.BAD_REQUEST);
     }
   }
 }

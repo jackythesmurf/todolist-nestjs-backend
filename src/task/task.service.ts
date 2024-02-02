@@ -11,8 +11,6 @@ export class TaskService {
     private taskRepository: Repository<Task>,
   ) {}
 
-  //   If the entity already exist in the database, it is updated.
-  //   If the entity does not exist in the database, it is inserted.
   async findAll(): Promise<Task[]> {
     return this.taskRepository.find();
   }
@@ -36,5 +34,17 @@ export class TaskService {
       throw new NotFoundException(`Task with ID "${id}" not found`);
     }
     await this.taskRepository.delete(id);
+  }
+
+  async update(
+    id: string,
+    updateTaskDto: Partial<CreateTaskDto>,
+  ): Promise<Task> {
+    let task = await this.taskRepository.findOneBy({ id });
+    if (!task) {
+      throw new NotFoundException(`Task with ID "${id}" not found`);
+    }
+    task = this.taskRepository.merge(task, updateTaskDto);
+    return this.taskRepository.save(task);
   }
 }
