@@ -5,7 +5,6 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TaskModule } from './task/task.module';
 
-
 @Module({
   imports: [
     TaskModule,
@@ -22,6 +21,6 @@ import { TaskModule } from './task/task.module';
     }),
   ],
   controllers: [AppController],
-  providers: [AppService]
+  providers: [AppService],
 })
 export class AppModule {}
