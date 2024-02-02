@@ -16,7 +16,7 @@ describe('TaskController', () => {
 
     const module: TestingModule = await Test.createTestingModule({
       controllers: [TaskController],
-    
+
       providers: [
         {
           provide: TaskService,
@@ -71,7 +71,7 @@ describe('TaskController', () => {
       jest.spyOn(service, 'findAll').mockResolvedValue(result);
 
       expect(await controller.findAll()).toEqual(result);
-   
+
       expect(service.findAll).toHaveBeenCalled();
     });
   });
