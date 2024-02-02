@@ -18,6 +18,7 @@ describe('TaskService', () => {
           provide: getRepositoryToken(Task),
           useValue: {
             save: jest.fn(),
+            find: jest.fn(),
           },
         },
       ],
@@ -48,4 +49,33 @@ describe('TaskService', () => {
       expect(mockRepository.save).toHaveBeenCalledWith(createTaskDto);
     });
   });
+
+  describe('findAll', () => {
+    it('should return an array of tasks', async () => {
+      const result: Task[] = [
+        {
+          id: 'some-id',
+          name: 'Task One',
+          description: 'This is task one',
+          startDate: new Date('2020-01-01T00:00:00Z'),
+          endDate: new Date('2020-01-02T00:00:00Z'),
+          finished: false,
+        },
+        {
+          id: 'another-id',
+          name: 'Task Two',
+          description: 'This is task two',
+          startDate: new Date('2020-02-01T00:00:00Z'),
+          endDate: new Date('2020-02-02T00:00:00Z'),
+          finished: true,
+        },
+      ];
+
+      jest.spyOn(mockRepository, 'find').mockResolvedValue(result);
+
+      expect(await service.findAll()).toEqual(result);
+      expect(mockRepository.find).toHaveBeenCalled();
+    });
+  });
+
 });

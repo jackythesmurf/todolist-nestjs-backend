@@ -5,6 +5,7 @@ import {
   HttpException,
   HttpStatus,
   Logger,
+  Get,
 } from '@nestjs/common';
 
 import { TaskService } from './task.service';
@@ -25,6 +26,24 @@ export class TaskController {
       // HTTP exception if there is error
       this.logger.error(`Failed to create task: ${error.message}`, error.stack);
       throw new HttpException('Failed to create task', HttpStatus.BAD_REQUEST);
+    }
+  }
+
+  @Get()
+  async findAll() {
+    try {
+      const tasks = await this.taskService.findAll();
+      this.logger.log(`Retrieved all tasks successfully`);
+      return tasks;
+    } catch (error) {
+      this.logger.error(
+        `Failed to retrieve tasks: ${error.message}`,
+        error.stack,
+      );
+      throw new HttpException(
+        'Failed to retrieve tasks',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 }
