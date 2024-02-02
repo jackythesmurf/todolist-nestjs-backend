@@ -5,6 +5,23 @@ on: [push]
 jobs:
   build:
     runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:latest
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: root
+          POSTGRES_DB: task
+        ports:
+          - 5432:5432
+        # Set options to be used by the PostgreSQL service
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
@@ -12,5 +29,20 @@ jobs:
           node-version: 16
       - run: npm ci
       - run: npm test
+      - name: Wait for PostgreSQL to become available
+        run: |
+          until PGPASSWORD=$POSTGRES_PASSWORD psql -h localhost -U $POSTGRES_USER -d $POSTGRES_DB -c 'select 1'; do
+            echo "Waiting for PostgreSQL..."
+            sleep 1
+          done
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: task
       - run: npm run test:e2e
-      # Add your end-to-end test commands here
+        env:
+          DB_HOST: localhost
+          DB_PORT: 5432
+          DB_USER: postgres
+          DB_PASSWORD: rooot
+          DB_NAME: task

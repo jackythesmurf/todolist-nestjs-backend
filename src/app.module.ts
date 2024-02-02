@@ -2,6 +2,8 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { TaskController } from './task/task.controller';
+import { AppController } from './app.controller';
+import { AppService } from './app.service';
 
 @Module({
   imports: [
@@ -17,6 +19,7 @@ import { TaskController } from './task/task.controller';
       synchronize: false,
     }),
   ],
-  controllers: [TaskController],
+  controllers: [TaskController, AppController],
+  providers: [AppService]
 })
 export class AppModule {}
