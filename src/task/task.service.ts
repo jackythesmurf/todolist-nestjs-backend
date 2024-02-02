@@ -11,9 +11,13 @@ export class TaskService {
     private taskRepository: Repository<Task>,
   ) {}
 
-//   If the entity already exist in the database, it is updated.
-//   If the entity does not exist in the database, it is inserted.
+  //   If the entity already exist in the database, it is updated.
+  //   If the entity does not exist in the database, it is inserted.
   create(createTaskDto: CreateTaskDto) {
     return this.taskRepository.save(createTaskDto);
+  }
+
+  findAll() {
+    return this.taskRepository.find();
   }
 }
