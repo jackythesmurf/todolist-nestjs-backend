@@ -73,10 +73,11 @@ export class TaskController {
   }
 
   @Delete(':id')
-  async delete(@Param('id') id: string): Promise<void> {
+  async delete(@Param('id') id: string): Promise<boolean> {
     try {
       await this.taskService.deleteTask(id);
       this.logger.log(`Task with ID: ${id} deleted successfully`);
+      return true
     } catch (error) {
       this.logger.error(`Failed to delete task: ${error.message}`, error.stack);
       throw new HttpException(
