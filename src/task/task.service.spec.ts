@@ -19,6 +19,7 @@ describe('TaskService', () => {
           useValue: {
             save: jest.fn(),
             find: jest.fn(),
+            create: jest.fn().mockImplementation((dto) => dto),
           },
         },
       ],
