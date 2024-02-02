@@ -13,11 +13,12 @@ export class TaskService {
 
   //   If the entity already exist in the database, it is updated.
   //   If the entity does not exist in the database, it is inserted.
-  create(createTaskDto: CreateTaskDto) {
-    return this.taskRepository.save(createTaskDto);
+  async create(createTaskDto: CreateTaskDto): Promise<Task> {
+    const task = this.taskRepository.create(createTaskDto);
+    return this.taskRepository.save(task);
   }
 
-  findAll() {
+  async findAll(): Promise<Task[]> {
     return this.taskRepository.find();
   }
 }
