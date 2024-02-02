@@ -7,6 +7,7 @@ import {
   HttpStatus,
   Logger,
   Param,
+  Delete
 } from '@nestjs/common';
 import { TaskService } from './task.service';
 import { CreateTaskDto } from './dto/create-task.dto';
@@ -46,7 +47,7 @@ export class TaskController {
       );
     }
   }
-  
+
   @Get(':id')
   async findOne(@Param('id') id: string): Promise<Task> {
     try {
@@ -66,6 +67,20 @@ export class TaskController {
       }
       throw new HttpException(
         'Failed to retrieve task',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  @Delete(':id')
+  async delete(@Param('id') id: string): Promise<void> {
+    try {
+      await this.taskService.deleteTask(id);
+      this.logger.log(`Task with ID: ${id} deleted successfully`);
+    } catch (error) {
+      this.logger.error(`Failed to delete task: ${error.message}`, error.stack);
+      throw new HttpException(
+        'Failed to delete task',
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
