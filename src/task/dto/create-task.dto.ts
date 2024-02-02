@@ -3,6 +3,6 @@ export class CreateTaskDto {
   description: string;
   startDate: Date;
   endDate: Date;
-  finish: boolean;
+  finished: boolean;
   // add username later
 }
