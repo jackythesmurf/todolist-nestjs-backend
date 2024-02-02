@@ -9,14 +9,20 @@ describe('TaskController', () => {
   let service: TaskService;
 
   beforeEach(async () => {
-    // Mock TaskService
     const mockTaskService = {
       create: jest.fn(),
+      findAll: jest.fn(),
     };
 
     const module: TestingModule = await Test.createTestingModule({
       controllers: [TaskController],
-      providers: [{ provide: TaskService, useValue: mockTaskService }],
+    
+      providers: [
+        {
+          provide: TaskService,
+          useValue: mockTaskService,
+        },
+      ],
     }).compile();
 
     controller = module.get<TaskController>(TaskController);
@@ -46,6 +52,27 @@ describe('TaskController', () => {
 
       // Verify the service method was called with the correct parameter
       expect(service.create).toHaveBeenCalledWith(dto);
+    });
+  });
+
+  describe('findAll', () => {
+    it('should return an array of tasks', async () => {
+      const result: Task[] = [
+        {
+          id: 'some-id',
+          name: 'Test Task',
+          description: 'This is a test task',
+          startDate: new Date(),
+          endDate: new Date(),
+          finished: false,
+        },
+      ];
+
+      jest.spyOn(service, 'findAll').mockResolvedValue(result);
+
+      expect(await controller.findAll()).toEqual(result);
+   
+      expect(service.findAll).toHaveBeenCalled();
     });
   });
 });

@@ -20,7 +20,7 @@ export class Task {
   @Column()
   finished: boolean;
 
-// Add username later on
-//   @Column()
-//   username: string;
+  // Add username later on
+  //   @Column()
+  //   username: string;
 }
