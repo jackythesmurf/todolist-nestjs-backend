@@ -91,7 +91,7 @@ export class TaskController {
   @Patch(':id')
   async updateTask(
     @Param('id') id: string,
-    @Body() updateTaskDto: Partial<CreateTaskDto>, // Assuming the CreateTaskDto can be reused for updates
+    @Body() updateTaskDto: Partial<CreateTaskDto>,
   ): Promise<Task> {
     try {
       const updatedTask = await this.taskService.update(id, updateTaskDto);

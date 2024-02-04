@@ -44,13 +44,10 @@ describe('TaskController', () => {
         finished: false,
       };
 
-      // Mock the service method to avoid actual implementation
       jest.spyOn(service, 'create').mockResolvedValue(dto);
 
-      // Execute the controller method
       expect(await controller.create(dto)).toEqual(dto);
 
-      // Verify the service method was called with the correct parameter
       expect(service.create).toHaveBeenCalledWith(dto);
     });
   });
