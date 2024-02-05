@@ -1,4 +1,4 @@
-name: Node.js Package
+name: NestJS Test
 
 on: [push]
 
@@ -7,20 +7,20 @@ jobs:
     runs-on: ubuntu-latest
 
     services:
-      postgres:
-        image: postgres:latest
+      mysql:
+        image: mysql:latest
         env:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: root
-          POSTGRES_DB: task
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: task
+          MYSQL_USER: testuser
+          MYSQL_PASSWORD: root
         ports:
-          - 5432:5432
-        # Set options to be used by the PostgreSQL service
+          - 3306:3306
         options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
+          --health-cmd="mysqladmin ping -h localhost"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
 
     steps:
       - uses: actions/checkout@v3
@@ -29,25 +29,23 @@ jobs:
           node-version: 16
       - run: npm ci
       - run: npm test
-      - name: Wait for PostgreSQL to become available
+      - name: Wait for MySQL to become available
         run: |
-          until PGPASSWORD=$POSTGRES_PASSWORD psql -h localhost -U $POSTGRES_USER -d $POSTGRES_DB -c 'select 1'; do
-            echo "Waiting for PostgreSQL..."
+          until mysql --host=127.0.0.1 --port=3306 --user=root --password=$MYSQL_ROOT_PASSWORD --database=$MYSQL_DATABASE --execute="SELECT 1"; do
+            echo "Waiting for MySQL..."
             sleep 1
           done
         env:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: root
-          POSTGRES_DB: task
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: task
       - run: npm run test:e2e
         env:
-          DB_HOST: localhost
-          DB_PORT: 5432
-          DB_USER: postgres
+          DB_HOST: 127.0.0.1
+          DB_PORT: 3306
+          DB_USER: root
           DB_PASSWORD: root
           DB_NAME: task
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v3
-        env:
-          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}

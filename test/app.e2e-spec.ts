@@ -18,4 +18,8 @@ describe('AppController (e2e)', () => {
   it('/ (GET)', () => {
     return request(app.getHttpServer()).get('/').expect(200); // Only tests if the app is running and responds with HTTP 200 status
   });
+
+   afterAll(async () => {
+     await app.close(); // This will close the Nest application along with its connections
+   });
 });
