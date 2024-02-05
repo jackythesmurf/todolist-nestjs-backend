@@ -1,4 +1,4 @@
-name: Nestjs Test
+name: NestJS Test
 
 on: [push]
 
@@ -15,10 +15,10 @@ jobs:
         ports:
           - 3306:3306
         options: >-
-          --health-cmd "mysqladmin ping"
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
+          --health-cmd="mysqladmin ping -h localhost"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
 
     steps:
       - uses: actions/checkout@v3
@@ -29,7 +29,7 @@ jobs:
       - run: npm test
       - name: Wait for MySQL to become available
         run: |
-          until mysql --host=localhost --user=root --password=$MYSQL_ROOT_PASSWORD --database=$MYSQL_DATABASE --execute="SELECT 1"; do
+          until mysql --host=127.0.0.1 --port=3306 --user=root --password=$MYSQL_ROOT_PASSWORD --database=$MYSQL_DATABASE --execute="SELECT 1"; do
             echo "Waiting for MySQL..."
             sleep 1
           done
@@ -38,12 +38,12 @@ jobs:
           MYSQL_DATABASE: task
       - run: npm run test:e2e
         env:
-          DB_HOST: localhost
+          DB_HOST: 127.0.0.1
           DB_PORT: 3306
           DB_USER: root
           DB_PASSWORD: root
           DB_NAME: task
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v3
-        env:
-          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
